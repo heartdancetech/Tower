@@ -15,6 +15,7 @@ func Test_logging_LogMode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Nil(t, nil)
+			assert.Nil(t, nil)
 		})
 	}
 }
