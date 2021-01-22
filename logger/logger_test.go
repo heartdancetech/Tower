@@ -1,4 +1,4 @@
-package tower
+package logger
 
 import (
 	"github.com/stretchr/testify/assert"

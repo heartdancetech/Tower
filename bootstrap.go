@@ -1,5 +1,7 @@
 package tower
 
+import "github.com/go-tower/tower/logger"
+
 type BootStraper interface {
 	Listen()
 	Stop()
@@ -16,7 +18,7 @@ type BootStrap struct {
 
 func NewBootStrap(config *Config) BootStraper {
 	if config.Logger == nil {
-		config.Logger = DefaultLogging
+		config.Logger = logger.DefaultLogging
 	}
 
 	if config.IP == "" {

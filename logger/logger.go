@@ -1,4 +1,4 @@
-package tower
+package logger
 
 import (
 	"log"
