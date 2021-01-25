@@ -12,6 +12,7 @@ type BootStraper interface {
 
 type BootStrap struct {
 	*Config
+	ConnMgr     ConnManager
 	OnConnStart func(conn Connectioner)
 	OnConnClose func(conn Connectioner)
 }
@@ -30,7 +31,8 @@ func NewBootStrap(config *Config) BootStraper {
 	}
 
 	return &BootStrap{
-		Config: config,
+		Config:  config,
+		ConnMgr: NewConnManage(),
 	}
 }
 
