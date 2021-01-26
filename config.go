@@ -13,5 +13,5 @@ type Config struct {
 	MaxWorkerTaskLen uint32 //业务工作Worker对应负责的任务队列最大任务存储数量
 	MaxMsgChanLen    uint32 //SendBuffMsg发送消息的缓冲最大长度
 
-	Logger logger.Logger
+	Logging logger.Logger
 }
