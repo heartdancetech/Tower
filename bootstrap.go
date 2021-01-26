@@ -17,7 +17,7 @@ type BootStraper interface {
 	getConfig() *Config
 }
 
-type BootStrap struct {
+type bootStrap struct {
 	*Config
 	ConnMgr     ConnManager
 	OnConnStart func(conn Connectioner)
@@ -37,7 +37,7 @@ func NewBootStrap(config *Config) BootStraper {
 		config.Port = 8999
 	}
 
-	return &BootStrap{
+	return &bootStrap{
 		Config:      config,
 		ConnMgr:     NewConnManage(),
 		OnConnStart: nil,
@@ -45,7 +45,7 @@ func NewBootStrap(config *Config) BootStraper {
 	}
 }
 
-func (bs *BootStrap) Listen() {
+func (bs *bootStrap) Listen() {
 	bs.Logging.Debug("Server listenner at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
 	addr, err := net.ResolveTCPAddr("", fmt.Sprintf("%s:%d", bs.IP, bs.Port))
 	if err != nil {
@@ -83,34 +83,34 @@ func (bs *BootStrap) Listen() {
 	}
 }
 
-func (bs *BootStrap) Stop() {
+func (bs *bootStrap) Stop() {
 	panic("implement me")
 }
 
-func (bs *BootStrap) GetConnMgr() ConnManager {
+func (bs *bootStrap) GetConnMgr() ConnManager {
 	return nil
 }
 
-func (bs *BootStrap) SetOnConnSatrt(hookFunc func(conn Connectioner)) {
+func (bs *bootStrap) SetOnConnSatrt(hookFunc func(conn Connectioner)) {
 	bs.OnConnStart = hookFunc
 }
 
-func (bs *BootStrap) SetOnConnClose(hookFunc func(conn Connectioner)) {
+func (bs *bootStrap) SetOnConnClose(hookFunc func(conn Connectioner)) {
 	bs.OnConnClose = hookFunc
 }
 
-func (bs *BootStrap) CallOnConnStart(conn Connectioner) {
+func (bs *bootStrap) CallOnConnStart(conn Connectioner) {
 	if bs.OnConnStart != nil {
 		bs.OnConnStart(conn)
 	}
 }
 
-func (bs *BootStrap) CallOnConnClose(conn Connectioner) {
+func (bs *bootStrap) CallOnConnClose(conn Connectioner) {
 	if bs.OnConnClose != nil {
 		bs.OnConnClose(conn)
 	}
 }
 
-func (bs *BootStrap) getConfig() *Config {
+func (bs *bootStrap) getConfig() *Config {
 	return bs.Config
 }
