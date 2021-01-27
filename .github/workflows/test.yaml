@@ -3,8 +3,7 @@ name: Test
 on:
   push:
     paths:
-      - '*.go'
-      - '*/*.go'
+      - '**.go'
 
 jobs:
   Test:
