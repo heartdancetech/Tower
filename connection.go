@@ -153,14 +153,14 @@ func (c *Connection) Stop() {
 }
 
 func (c *Connection) GetTCPConnection() *net.TCPConn {
-	panic("implement me")
+	return c.Conn
 }
 func (c *Connection) GetConnID() uint {
 	return c.ConnID
 }
 
 func (c *Connection) RemoteAddr() net.Addr {
-	panic("implement me")
+	return c.RemoteAddr()
 }
 
 func (c *Connection) SendMsg(msgId uint, data []byte) error {
