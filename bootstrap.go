@@ -88,7 +88,7 @@ func (bs *bootStrap) Stop() {
 }
 
 func (bs *bootStrap) GetConnMgr() ConnManager {
-	return nil
+	return bs.ConnMgr
 }
 
 func (bs *bootStrap) SetOnConnSatrt(hookFunc func(conn Connectioner)) {

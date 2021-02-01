@@ -164,11 +164,47 @@ func (c *Connection) RemoteAddr() net.Addr {
 }
 
 func (c *Connection) SendMsg(msgId uint, data []byte) error {
-	panic("implement me")
+	c.RLock()
+	if c.isClosed == true {
+		c.RUnlock()
+		return errors.New("connection closed when send msg")
+	}
+	c.RUnlock()
+
+	//将data封包，并且发送
+	dp := NewDataPack()
+	msg, err := dp.Pack(NewMsgPackage(msgId, data))
+	if err != nil {
+		fmt.Println("Pack error msg id = ", msgId)
+		return errors.New("Pack error msg ")
+	}
+
+	//写回客户端
+	c.msgChan <- msg
+
+	return nil
 }
 
 func (c *Connection) SendBuffMsg(msgId uint, data []byte) error {
-	panic("implement me")
+	c.RLock()
+	if c.isClosed == true {
+		c.RUnlock()
+		return errors.New("Connection closed when send buff msg")
+	}
+	c.RUnlock()
+
+	//将data封包，并且发送
+	dp := NewDataPack()
+	msg, err := dp.Pack(NewMsgPackage(msgId, data))
+	if err != nil {
+		fmt.Println("Pack error msg id = ", msgId)
+		return errors.New("Pack error msg ")
+	}
+
+	//写回客户端
+	c.msgBuffChan <- msg
+
+	return nil
 }
 
 func (c *Connection) SetProperty(key string, value interface{}) {
