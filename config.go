@@ -15,3 +15,17 @@ type Config struct {
 
 	Logging logger.Logger
 }
+
+func (c *Config) check() {
+	if c.Logging == nil {
+		c.Logging = logger.DefaultLogging
+	}
+
+	if c.IP == "" {
+		c.IP = "0.0.0.0"
+	}
+
+	if c.Port == 0 {
+		c.Port = 8999
+	}
+}

@@ -2,7 +2,6 @@ package tower
 
 import (
 	"fmt"
-	"github.com/go-tower/tower/logger"
 	"net"
 )
 
@@ -25,17 +24,10 @@ type bootStrap struct {
 }
 
 func NewBootStrap(config *Config) BootStraper {
-	if config.Logging == nil {
-		config.Logging = logger.DefaultLogging
+	if config == nil {
+		config = &Config{}
 	}
-
-	if config.IP == "" {
-		config.IP = "0.0.0.0"
-	}
-
-	if config.Port == 0 {
-		config.Port = 8999
-	}
+	config.check()
 
 	return &bootStrap{
 		Config:      config,

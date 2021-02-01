@@ -3,7 +3,6 @@ package tower
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/go-tower/tower/logger"
 	"io"
 	"net"
@@ -59,24 +58,26 @@ func NewConnection(server BootStraper, conn *net.TCPConn, connID uint) *Connecti
 func (c *Connection) startWrite() {
 	c.logging.Debug("[Writer Goroutine is running]")
 	defer c.logging.Debug("%s [conn Writer exit!]", c.RemoteAddr().String())
-	select {
-	case data := <-c.msgChan: //有数据要写给客户端
-		if _, err := c.Conn.Write(data); err != nil {
-			c.logging.Error("Send Buff Data error:, %v Conn Writer exit", err)
-			return
-		}
-	case data, ok := <-c.msgBuffChan: //有数据要写给客户端
-		if ok {
+	for {
+		select {
+		case data := <-c.msgChan: //有数据要写给客户端
 			if _, err := c.Conn.Write(data); err != nil {
 				c.logging.Error("Send Buff Data error:, %v Conn Writer exit", err)
 				return
 			}
-		} else {
-			c.logging.Debug("msgBuffChan is Closed")
-			break
+		case data, ok := <-c.msgBuffChan: //有数据要写给客户端
+			if ok {
+				if _, err := c.Conn.Write(data); err != nil {
+					c.logging.Error("Send Buff Data error:, %v Conn Writer exit", err)
+					return
+				}
+			} else {
+				c.logging.Debug("msgBuffChan is Closed")
+				break
+			}
+		case <-c.ctx.Done():
+			return
 		}
-	case <-c.ctx.Done():
-		return
 	}
 }
 func (c *Connection) startRead() {
@@ -84,40 +85,40 @@ func (c *Connection) startRead() {
 	defer c.logging.Debug("%s [conn Writer exit!]", c.RemoteAddr().String())
 	defer c.Stop()
 
-	select {
-	case <-c.ctx.Done():
-		return
-	default:
-		// 创建拆包解包的对象
-		dp := NewDataPack()
-
-		//读取客户端的Msg head
-		headData := make([]byte, dp.GetHeadLen())
-		if _, err := io.ReadFull(c.Conn, headData); err != nil {
-			fmt.Println("read msg head error ", err)
+	for {
+		select {
+		case <-c.ctx.Done():
 			return
-		}
-		//fmt.Printf("read headData %+v\n", headData)
+		default:
+			// 创建拆包解包的对象
+			dp := NewDataPack()
 
-		//拆包，得到msgid 和 datalen 放在msg中
-		msg, err := dp.Unpack(headData)
-		if err != nil {
-			fmt.Println("unpack error ", err)
-			return
-		}
-
-		//根据 dataLen 读取 data，放在msg.Data中
-		var data []byte
-		if msg.GetDataLen() > 0 {
-			data = make([]byte, msg.GetDataLen())
-			if _, err := io.ReadFull(c.Conn, data); err != nil {
-				fmt.Println("read msg data error ", err)
+			//读取客户端的Msg head
+			headData := make([]byte, dp.GetHeadLen())
+			if _, err := io.ReadFull(c.Conn, headData); err != nil {
+				c.logging.Error("read msg head error: %v", err)
 				return
 			}
-		}
-		msg.SetData(data)
-	}
 
+			//拆包，得到msgid 和 datalen 放在msg中
+			msg, err := dp.Unpack(headData)
+			if err != nil {
+				c.logging.Error("unpack error: %v", err)
+				return
+			}
+
+			//根据 dataLen 读取 data，放在msg.Data中
+			var data []byte
+			if msg.GetDataLen() > 0 {
+				data = make([]byte, msg.GetDataLen())
+				if _, err := io.ReadFull(c.Conn, data); err != nil {
+					c.logging.Error("read msg data error: %v", err)
+					return
+				}
+			}
+			msg.SetData(data)
+		}
+	}
 }
 
 func (c *Connection) Start() {
@@ -175,7 +176,7 @@ func (c *Connection) SendMsg(msgId uint, data []byte) error {
 	dp := NewDataPack()
 	msg, err := dp.Pack(NewMsgPackage(msgId, data))
 	if err != nil {
-		fmt.Println("Pack error msg id = ", msgId)
+		c.logging.Error("Pack error msg id = ", msgId)
 		return errors.New("Pack error msg ")
 	}
 
@@ -197,7 +198,7 @@ func (c *Connection) SendBuffMsg(msgId uint, data []byte) error {
 	dp := NewDataPack()
 	msg, err := dp.Pack(NewMsgPackage(msgId, data))
 	if err != nil {
-		fmt.Println("Pack error msg id = ", msgId)
+		c.logging.Error("Pack error msg id = %v", msgId)
 		return errors.New("Pack error msg ")
 	}
 
