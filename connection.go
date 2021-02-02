@@ -100,7 +100,7 @@ func (c *Connection) startRead() {
 				return
 			}
 
-			//拆包，得到msgid 和 datalen 放在msg中
+			//拆包，得到msg id 和 data len 放在msg中
 			msg, err := dp.Unpack(headData)
 			if err != nil {
 				c.logging.Error("unpack error: %v", err)
@@ -191,7 +191,7 @@ func (c *Connection) SendBuffMsg(msgId uint, data []byte) error {
 	c.RLock()
 	if c.isClosed == true {
 		c.RUnlock()
-		return errors.New("Connection closed when send buff msg")
+		return errors.New("connection closed when send buff msg")
 	}
 	c.RUnlock()
 
