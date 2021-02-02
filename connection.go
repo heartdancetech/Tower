@@ -150,7 +150,8 @@ func (c *Connection) Stop() {
 	c.Server.GetConnMgr().Remove(c)
 
 	//关闭该链接全部管道
-	//close(c.msgBuffChan)
+	close(c.msgBuffChan)
+	close(c.msgChan)
 }
 
 func (c *Connection) GetTCPConnection() *net.TCPConn {

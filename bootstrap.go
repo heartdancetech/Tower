@@ -76,6 +76,7 @@ func (bs *bootStrap) Listen() {
 }
 
 func (bs *bootStrap) Stop() {
+	bs.ConnMgr.ClearConn()
 	panic("implement me")
 }
 
