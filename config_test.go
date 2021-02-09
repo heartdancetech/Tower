@@ -26,14 +26,14 @@ func TestConfig_check(t *testing.T) {
 				Logging:          nil,
 			}
 			c.check()
-			//assert.NotEqual(t, "", c.Name)
-			assert.NotEqual(t, c.IP, "")
-			assert.NotEqual(t, c.Port, 0)
-			//assert.NotEqual(t, c.MaxConn, 0)
-			//assert.NotEqual(t, c.WorkerPoolSize, 0)
-			//assert.NotEqual(t, c.MaxPacketSize, 0)
-			//assert.NotEqual(t, c.MaxWorkerTaskLen, 0)
-			//assert.NotEqual(t, c.MaxMsgChanLen, 0)
+			assert.NotEqual(t, "", c.IP)
+			assert.Equal(t, "0.0.0.0", c.IP)
+			assert.NotEqual(t, 0, c.Port)
+			assert.Equal(t, 8999, c.Port)
+			assert.NotEqual(t, 0, c.MaxConn)
+			assert.Equal(t, 1024, c.MaxConn)
+			assert.NotEqual(t, 0, c.MaxPacketSize)
+			assert.Equal(t, 4092, c.MaxPacketSize)
 			assert.NotNil(t, c.Logging)
 		})
 	}
