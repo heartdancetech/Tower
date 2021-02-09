@@ -36,4 +36,8 @@ func (c *Config) check() {
 	if c.MaxConn == 0 {
 		c.MaxConn = 1024
 	}
+
+	if c.MaxMsgChanLen == 0 {
+		c.MaxMsgChanLen = 1024
+	}
 }

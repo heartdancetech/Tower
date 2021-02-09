@@ -33,7 +33,9 @@ func TestConfig_check(t *testing.T) {
 			assert.NotEqual(t, 0, c.MaxConn)
 			assert.Equal(t, 1024, c.MaxConn)
 			assert.NotEqual(t, 0, c.MaxPacketSize)
-			assert.Equal(t, uint64(4096), c.MaxPacketSize)
+			assert.Equal(t, uint32(4096), c.MaxPacketSize)
+			assert.NotEqual(t, 0, c.MaxMsgChanLen)
+			assert.Equal(t, uint32(1024), c.MaxMsgChanLen)
 			assert.NotNil(t, c.Logging)
 		})
 	}
