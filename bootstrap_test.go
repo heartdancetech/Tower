@@ -5,6 +5,20 @@ import (
 	"testing"
 )
 
+func TestNewBootStrap(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		{"test"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			b := NewBootStrap(nil)
+			assert.NotNil(t, b)
+		})
+	}
+}
+
 func Test_bootStrap_SetOnConnSatrt(t *testing.T) {
 	tests := []struct {
 		name string
@@ -21,7 +35,7 @@ func Test_bootStrap_SetOnConnSatrt(t *testing.T) {
 				OnConnStart: nil,
 				OnConnClose: nil,
 			}
-			b.SetOnConnSatrt(func(conn Connectioner) {})
+			b.SetOnConnStart(func(conn Connectioner) {})
 			assert.NotNil(t, b.OnConnStart)
 		})
 	}
