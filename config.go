@@ -16,7 +16,7 @@ type Config struct {
 	Logging logger.Logger
 }
 
-func (c *Config) check() {
+func (c *Config) setDefault() {
 	if c.Logging == nil {
 		c.Logging = logger.DefaultLogging
 	}

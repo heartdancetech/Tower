@@ -80,6 +80,7 @@ func (c *Connection) startWrite() {
 		}
 	}
 }
+
 func (c *Connection) startRead() {
 	c.logging.Debug("[Reader Goroutine is running]")
 	defer c.logging.Debug("%s [conn Writer exit!]", c.RemoteAddr().String())
@@ -157,6 +158,7 @@ func (c *Connection) Stop() {
 func (c *Connection) GetTCPConnection() *net.TCPConn {
 	return c.Conn
 }
+
 func (c *Connection) GetConnID() uint {
 	return c.ConnID
 }

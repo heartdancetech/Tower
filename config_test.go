@@ -14,18 +14,8 @@ func TestConfig_check(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := Config{
-				Name:             "",
-				IP:               "",
-				Port:             0,
-				MaxPacketSize:    0,
-				MaxConn:          0,
-				WorkerPoolSize:   0,
-				MaxWorkerTaskLen: 0,
-				MaxMsgChanLen:    0,
-				Logging:          nil,
-			}
-			c.check()
+			c := Config{}
+			c.setDefault()
 			assert.NotEqual(t, "", c.IP)
 			assert.Equal(t, "0.0.0.0", c.IP)
 			assert.NotEqual(t, 0, c.Port)

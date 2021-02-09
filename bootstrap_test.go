@@ -5,6 +5,10 @@ import (
 	"testing"
 )
 
+var (
+	bs = NewBootStrap(nil)
+)
+
 func TestNewBootStrap(t *testing.T) {
 	tests := []struct {
 		name string
@@ -13,8 +17,7 @@ func TestNewBootStrap(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			b := NewBootStrap(nil)
-			assert.NotNil(t, b)
+			assert.NotNil(t, bs)
 		})
 	}
 }
@@ -28,7 +31,7 @@ func Test_bootStrap_SetOnConnSatrt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := Config{}
-			c.check()
+			c.setDefault()
 			b := &bootStrap{
 				Config:      &c,
 				ConnMgr:     nil,
@@ -50,7 +53,7 @@ func Test_bootStrap_SetOnConnClose(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := Config{}
-			c.check()
+			c.setDefault()
 			b := &bootStrap{
 				Config:      &c,
 				ConnMgr:     nil,

@@ -27,7 +27,7 @@ func NewBootStrap(config *Config) BootStraper {
 	if config == nil {
 		config = &Config{}
 	}
-	config.check()
+	config.setDefault()
 
 	return &bootStrap{
 		Config:      config,
