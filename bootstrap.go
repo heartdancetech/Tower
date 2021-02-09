@@ -9,7 +9,7 @@ type BootStraper interface {
 	Listen()                                // 启动服务
 	Stop()                                  // 关闭服务
 	GetConnMgr() ConnManager                //得到链接管理
-	SetOnConnSatrt(func(conn Connectioner)) //设置该Server的连接创建时Hook函数
+	SetOnConnStart(func(conn Connectioner)) //设置该Server的连接创建时Hook函数
 	SetOnConnClose(func(conn Connectioner)) //设置该Server的连接断开时的Hook函数
 	CallOnConnStart(conn Connectioner)      //调用连接OnConnStart Hook函数
 	CallOnConnClose(conn Connectioner)      //调用连接OnConnStop Hook函数
@@ -38,7 +38,7 @@ func NewBootStrap(config *Config) BootStraper {
 }
 
 func (bs *bootStrap) Listen() {
-	bs.Logging.Debug("Server listenner at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
+	bs.Logging.Debug("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
 	addr, err := net.ResolveTCPAddr("", fmt.Sprintf("%s:%d", bs.IP, bs.Port))
 	if err != nil {
 		bs.Logging.Error("resolve tcp addr err: %v", err)
@@ -51,7 +51,7 @@ func (bs *bootStrap) Listen() {
 		bs.Logging.Error("listen %s error: %v", bs.Port, err)
 		return
 	}
-	bs.Logging.Debug("start Zinx server %s succ, now listenning...", bs.Name)
+	bs.Logging.Debug("start server %s success, now listening...", bs.Name)
 	var cid uint = 0
 	for {
 		conn, err := listener.AcceptTCP()
@@ -77,14 +77,14 @@ func (bs *bootStrap) Listen() {
 
 func (bs *bootStrap) Stop() {
 	bs.ConnMgr.ClearConn()
-	panic("implement me")
+	bs.Logging.Info("server stop")
 }
 
 func (bs *bootStrap) GetConnMgr() ConnManager {
 	return bs.ConnMgr
 }
 
-func (bs *bootStrap) SetOnConnSatrt(hookFunc func(conn Connectioner)) {
+func (bs *bootStrap) SetOnConnStart(hookFunc func(conn Connectioner)) {
 	bs.OnConnStart = hookFunc
 }
 
