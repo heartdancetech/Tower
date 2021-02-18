@@ -2,6 +2,7 @@ package tower
 
 import (
 	"fmt"
+	"github.com/go-tower/tower/logger"
 	"net"
 )
 
@@ -14,10 +15,12 @@ type BootStraper interface {
 	CallOnConnStart(conn Connectioner)      //调用连接OnConnStart Hook函数
 	CallOnConnClose(conn Connectioner)      //调用连接OnConnStop Hook函数
 	getConfig() *Config
+	Logging() logger.Logger
 }
 
 type bootStrap struct {
 	*Config
+	logging     logger.Logger
 	ConnMgr     ConnManager
 	OnConnStart func(conn Connectioner)
 	OnConnClose func(conn Connectioner)
@@ -32,34 +35,35 @@ func NewBootStrap(config *Config) BootStraper {
 	return &bootStrap{
 		Config:      config,
 		ConnMgr:     NewConnManage(),
+		logging:     logger.DefaultLogging,
 		OnConnStart: nil,
 		OnConnClose: nil,
 	}
 }
 
 func (bs *bootStrap) Listen() {
-	bs.Logging.Debug("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
+	bs.logging.Debug("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
 	addr, err := net.ResolveTCPAddr("", fmt.Sprintf("%s:%d", bs.IP, bs.Port))
 	if err != nil {
-		bs.Logging.Error("resolve tcp addr err: %v", err)
+		bs.logging.Error("resolve tcp addr err: %v", err)
 		return
 	}
 
 	// 监听服务器地址
 	listener, err := net.ListenTCP("", addr)
 	if err != nil {
-		bs.Logging.Error("listen %s error: %v", bs.Port, err)
+		bs.logging.Error("listen %s error: %v", bs.Port, err)
 		return
 	}
-	bs.Logging.Debug("start server %s success, now listening...", bs.Name)
+	bs.logging.Debug("start server %s success, now listening...", bs.Name)
 	var cid uint = 0
 	for {
 		conn, err := listener.AcceptTCP()
 		if err != nil {
-			bs.Logging.Error("Accept err: %v", err)
+			bs.logging.Error("Accept err: %v", err)
 			return
 		}
-		bs.Logging.Debug("Get conn remote addr = %v", conn.RemoteAddr().String())
+		bs.logging.Debug("Get conn remote addr = %v", conn.RemoteAddr().String())
 
 		//3.2 设置服务器最大连接控制,如果超过最大连接，那么则关闭此新的连接
 		if bs.ConnMgr.Len() >= bs.Config.MaxConn {
@@ -77,7 +81,7 @@ func (bs *bootStrap) Listen() {
 
 func (bs *bootStrap) Stop() {
 	bs.ConnMgr.ClearConn()
-	bs.Logging.Info("server stop")
+	bs.logging.Info("server stop")
 }
 
 func (bs *bootStrap) GetConnMgr() ConnManager {
@@ -102,6 +106,10 @@ func (bs *bootStrap) CallOnConnClose(conn Connectioner) {
 	if bs.OnConnClose != nil {
 		bs.OnConnClose(conn)
 	}
+}
+
+func (bs *bootStrap) Logging() logger.Logger {
+	return bs.logging
 }
 
 func (bs *bootStrap) getConfig() *Config {

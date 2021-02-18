@@ -1,7 +1,5 @@
 package tower
 
-import "github.com/go-tower/tower/logger"
-
 type Config struct {
 	Name string
 	IP   string
@@ -12,15 +10,9 @@ type Config struct {
 	WorkerPoolSize   uint32 //业务工作Worker池的数量
 	MaxWorkerTaskLen uint32 //业务工作Worker对应负责的任务队列最大任务存储数量
 	MaxMsgChanLen    uint32 //SendBuffMsg发送消息的缓冲最大长度
-
-	Logging logger.Logger
 }
 
 func (c *Config) setDefault() {
-	if c.Logging == nil {
-		c.Logging = logger.DefaultLogging
-	}
-
 	if c.IP == "" {
 		c.IP = "0.0.0.0"
 	}
