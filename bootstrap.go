@@ -7,21 +7,23 @@ import (
 )
 
 type BootStraper interface {
-	Listen()                                // 启动服务
-	Stop()                                  // 关闭服务
-	GetConnMgr() ConnManager                //得到链接管理
-	SetOnConnStart(func(conn Connectioner)) //设置该Server的连接创建时Hook函数
-	SetOnConnClose(func(conn Connectioner)) //设置该Server的连接断开时的Hook函数
-	CallOnConnStart(conn Connectioner)      //调用连接OnConnStart Hook函数
-	CallOnConnClose(conn Connectioner)      //调用连接OnConnStop Hook函数
-	getConfig() *Config
-	Logging() logger.Logger
+	Listen()                                            // start server
+	Stop()                                              // stop server
+	GetConnMgr() ConnManager                            // get connection manager
+	SetOnConnStart(func(conn Connectioner))             // set hook func when client connect server
+	SetOnConnClose(func(conn Connectioner))             // set hook func when client disconnect server
+	CallOnConnStart(conn Connectioner)                  // call OnConnStart hook func
+	CallOnConnClose(conn Connectioner)                  // call OnConnStop hook func
+	getConfig() *Config                                 // get server global config
+	Logging() logger.Logger                             // get logging
+	AddRoute(msgId uint, handleFunc func(ctx *Context)) // add route
 }
 
 type bootStrap struct {
 	*Config
 	logging     logger.Logger
 	ConnMgr     ConnManager
+	Router      Router
 	OnConnStart func(conn Connectioner)
 	OnConnClose func(conn Connectioner)
 }
@@ -36,6 +38,7 @@ func NewBootStrap(config *Config) BootStraper {
 		Config:      config,
 		ConnMgr:     NewConnManage(),
 		logging:     logger.DefaultLogging,
+		Router:      newRoute(),
 		OnConnStart: nil,
 		OnConnClose: nil,
 	}
@@ -72,7 +75,7 @@ func (bs *bootStrap) Listen() {
 		}
 
 		//3.3 处理该新连接请求的 业务 方法， 此时应该有 handler 和 conn是绑定的
-		dealConn := NewConnection(bs, conn, cid)
+		dealConn := NewConnection(bs, conn, cid, bs.Router)
 
 		//3.4 启动当前链接的处理业务
 		go dealConn.Start()
@@ -114,4 +117,8 @@ func (bs *bootStrap) Logging() logger.Logger {
 
 func (bs *bootStrap) getConfig() *Config {
 	return bs.Config
+}
+
+func (bs *bootStrap) AddRoute(msgId uint, handleFunc func(ctx *Context)) {
+	bs.Router.AddRoute(msgId, handleFunc)
 }
