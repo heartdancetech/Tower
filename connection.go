@@ -12,10 +12,10 @@ type Connectioner interface {
 	Start()                                      //启动连接，让当前连接开始工作
 	Stop()                                       //停止连接，结束当前连接状态M
 	GetTCPConnection() *net.TCPConn              //从当前连接获取原始的socket TCPConn
-	GetConnID() uint                             //获取当前连接ID
+	GetConnID() uint32                           //获取当前连接ID
 	RemoteAddr() net.Addr                        //获取远程客户端地址信息
-	SendMsg(msgId uint, data []byte) error       //直接将Message数据发送数据给远程的TCP客户端(无缓冲)
-	SendBuffMsg(msgId uint, data []byte) error   //直接将Message数据发送给远程的TCP客户端(有缓冲)
+	SendMsg(msgId uint32, data []byte) error     //直接将Message数据发送数据给远程的TCP客户端(无缓冲)
+	SendBuffMsg(msgId uint32, data []byte) error //直接将Message数据发送给远程的TCP客户端(有缓冲)
 	SetProperty(key string, value interface{})   //设置链接属性
 	GetProperty(key string) (interface{}, error) //获取链接属性
 	RemoveProperty(key string)                   //移除链接属性
@@ -24,7 +24,7 @@ type Connectioner interface {
 type Connection struct {
 	Server    BootStraper
 	Conn      *net.TCPConn
-	ConnID    uint
+	ConnID    uint32
 	route     Router
 	ctx       context.Context
 	ctxCancel context.CancelFunc
@@ -39,7 +39,7 @@ type Connection struct {
 	isClosed     bool                   ///当前连接的关闭状态
 }
 
-func NewConnection(server BootStraper, conn *net.TCPConn, connID uint, route Router) *Connection {
+func NewConnection(server BootStraper, conn *net.TCPConn, connID uint32, route Router) *Connection {
 	c := &Connection{
 		Server:      server,
 		Conn:        conn,
@@ -107,6 +107,11 @@ func (c *Connection) startRead() {
 				return
 			}
 
+			if msg.DataLen > c.Server.getConfig().MaxPacketSize {
+				c.Server.Logging().Error("too large msg data received")
+				return
+			}
+
 			//根据 dataLen 读取 data，放在msg.Data中
 			var data []byte
 			if msg.GetDataLen() > 0 {
@@ -164,7 +169,7 @@ func (c *Connection) GetTCPConnection() *net.TCPConn {
 	return c.Conn
 }
 
-func (c *Connection) GetConnID() uint {
+func (c *Connection) GetConnID() uint32 {
 	return c.ConnID
 }
 
@@ -172,7 +177,7 @@ func (c *Connection) RemoteAddr() net.Addr {
 	return c.RemoteAddr()
 }
 
-func (c *Connection) SendMsg(msgId uint, data []byte) error {
+func (c *Connection) SendMsg(msgId uint32, data []byte) error {
 	c.RLock()
 	if c.isClosed == true {
 		c.RUnlock()
@@ -193,7 +198,7 @@ func (c *Connection) SendMsg(msgId uint, data []byte) error {
 	return nil
 }
 
-func (c *Connection) SendBuffMsg(msgId uint, data []byte) error {
+func (c *Connection) SendBuffMsg(msgId uint32, data []byte) error {
 	c.RLock()
 	if c.isClosed == true {
 		c.RUnlock()

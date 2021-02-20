@@ -1,27 +1,27 @@
 package tower
 
 type Message struct {
-	DataLen uint   //消息的长度
-	Id      uint   //消息的ID
+	DataLen uint32 //消息的长度
+	Id      uint32 //消息的ID
 	Data    []byte //消息的内容
 }
 
 //创建一个Message消息包
-func NewMsgPackage(id uint, data []byte) *Message {
+func NewMsgPackage(id uint32, data []byte) *Message {
 	return &Message{
-		DataLen: uint(len(data)),
+		DataLen: uint32(len(data)),
 		Id:      id,
 		Data:    data,
 	}
 }
 
 //获取消息数据段长度
-func (msg *Message) GetDataLen() uint {
+func (msg *Message) GetDataLen() uint32 {
 	return msg.DataLen
 }
 
 //获取消息ID
-func (msg *Message) GetMsgId() uint {
+func (msg *Message) GetMsgId() uint32 {
 	return msg.Id
 }
 
@@ -31,12 +31,12 @@ func (msg *Message) GetData() []byte {
 }
 
 //设置消息数据段长度
-func (msg *Message) SetDataLen(len uint) {
+func (msg *Message) SetDataLen(len uint32) {
 	msg.DataLen = len
 }
 
 //设计消息ID
-func (msg *Message) SetMsgId(msgId uint) {
+func (msg *Message) SetMsgId(msgId uint32) {
 	msg.Id = msgId
 }
 

@@ -6,20 +6,20 @@ import (
 )
 
 type Router interface {
-	AddRoute(msgId uint, handleFunc func(ctx *Context))
+	AddRoute(msgId uint32, handleFunc func(ctx *Context))
 	doHandler(ctx *Context)
 }
 
 type route struct {
-	routes map[uint]func(ctx *Context)
+	routes map[uint32]func(ctx *Context)
 	sync.Mutex
 }
 
 func newRoute() *route {
-	return &route{routes: make(map[uint]func(ctx *Context))}
+	return &route{routes: make(map[uint32]func(ctx *Context))}
 }
 
-func (r *route) AddRoute(msgId uint, handleFunc func(ctx *Context)) {
+func (r *route) AddRoute(msgId uint32, handleFunc func(ctx *Context)) {
 	r.Lock()
 	defer r.Unlock()
 	if _, ok := r.routes[msgId]; ok {

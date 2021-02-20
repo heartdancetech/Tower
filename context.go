@@ -2,7 +2,7 @@ package tower
 
 type Context struct {
 	conn    Connectioner
-	msgId   uint
+	msgId   uint32
 	message []byte
 }
 
@@ -10,7 +10,7 @@ func (ctx *Context) GetConnection() Connectioner {
 	return ctx.conn
 }
 
-func (ctx *Context) GetMsgId() uint {
+func (ctx *Context) GetMsgId() uint32 {
 	return ctx.msgId
 }
 

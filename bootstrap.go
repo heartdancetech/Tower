@@ -7,16 +7,16 @@ import (
 )
 
 type BootStraper interface {
-	Listen()                                            // start server
-	Stop()                                              // stop server
-	GetConnMgr() ConnManager                            // get connection manager
-	SetOnConnStart(func(conn Connectioner))             // set hook func when client connect server
-	SetOnConnClose(func(conn Connectioner))             // set hook func when client disconnect server
-	CallOnConnStart(conn Connectioner)                  // call OnConnStart hook func
-	CallOnConnClose(conn Connectioner)                  // call OnConnStop hook func
-	getConfig() *Config                                 // get server global config
-	Logging() logger.Logger                             // get logging
-	AddRoute(msgId uint, handleFunc func(ctx *Context)) // add route
+	Listen()                                              // start server
+	Stop()                                                // stop server
+	GetConnMgr() ConnManager                              // get connection manager
+	SetOnConnStart(func(conn Connectioner))               // set hook func when client connect server
+	SetOnConnClose(func(conn Connectioner))               // set hook func when client disconnect server
+	CallOnConnStart(conn Connectioner)                    // call OnConnStart hook func
+	CallOnConnClose(conn Connectioner)                    // call OnConnStop hook func
+	getConfig() *Config                                   // get server global config
+	Logging() logger.Logger                               // get logging
+	AddRoute(msgId uint32, handleFunc func(ctx *Context)) // add route
 }
 
 type bootStrap struct {
@@ -59,7 +59,7 @@ func (bs *bootStrap) Listen() {
 		return
 	}
 	bs.logging.Debug("start server %s success, now listening...", bs.Name)
-	var cid uint = 0
+	var cid uint32 = 0
 	for {
 		conn, err := listener.AcceptTCP()
 		if err != nil {
@@ -119,6 +119,6 @@ func (bs *bootStrap) getConfig() *Config {
 	return bs.Config
 }
 
-func (bs *bootStrap) AddRoute(msgId uint, handleFunc func(ctx *Context)) {
+func (bs *bootStrap) AddRoute(msgId uint32, handleFunc func(ctx *Context)) {
 	bs.Router.AddRoute(msgId, handleFunc)
 }

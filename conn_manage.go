@@ -6,21 +6,21 @@ import (
 )
 
 type ConnManager interface {
-	Add(conn Connectioner)                 //添加链接
-	Remove(conn Connectioner)              //删除连接
-	Get(connID uint) (Connectioner, error) //利用ConnID获取链接
-	Len() int                              //获取当前连接
-	ClearConn()                            //删除并停止所有链接
+	Add(conn Connectioner)                   //添加链接
+	Remove(conn Connectioner)                //删除连接
+	Get(connID uint32) (Connectioner, error) //利用ConnID获取链接
+	Len() int                                //获取当前连接
+	ClearConn()                              //删除并停止所有链接
 }
 
 type ConnManage struct {
-	connections map[uint]Connectioner // 连接管理
-	connLock    sync.RWMutex          //读写连接的读写锁
+	connections map[uint32]Connectioner // 连接管理
+	connLock    sync.RWMutex            //读写连接的读写锁
 }
 
 func NewConnManage() *ConnManage {
 	return &ConnManage{
-		connections: make(map[uint]Connectioner),
+		connections: make(map[uint32]Connectioner),
 	}
 }
 
@@ -37,7 +37,7 @@ func (c *ConnManage) Remove(conn Connectioner) {
 	delete(c.connections, conn.GetConnID())
 }
 
-func (c *ConnManage) Get(connID uint) (Connectioner, error) {
+func (c *ConnManage) Get(connID uint32) (Connectioner, error) {
 	c.connLock.RLock()
 	defer c.connLock.RUnlock()
 

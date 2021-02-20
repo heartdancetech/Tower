@@ -3,7 +3,6 @@ package tower
 import (
 	"bytes"
 	"encoding/binary"
-	"errors"
 )
 
 //封包拆包类实例，暂时不需要成员
@@ -60,10 +59,6 @@ func (dp *DataPack) Unpack(binaryData []byte) (*Message, error) {
 	//读msgID
 	if err := binary.Read(dataBuff, binary.LittleEndian, &msg.Id); err != nil {
 		return nil, err
-	}
-
-	if msg.DataLen > 4096 {
-		return nil, errors.New("too large msg data received")
 	}
 
 	//这里只需要把head的数据拆包出来就可以了，然后再通过head的长度，再从conn读取一次数据
