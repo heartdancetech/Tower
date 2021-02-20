@@ -46,14 +46,14 @@ func NewBootStrap(config *Config) BootStraper {
 
 func (bs *bootStrap) Listen() {
 	bs.logging.Debug("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
-	addr, err := net.ResolveTCPAddr("", fmt.Sprintf("%s:%d", bs.IP, bs.Port))
+	addr, err := net.ResolveTCPAddr(bs.IPVersion, fmt.Sprintf("%s:%d", bs.IP, bs.Port))
 	if err != nil {
 		bs.logging.Error("resolve tcp addr err: %v", err)
 		return
 	}
 
 	// 监听服务器地址
-	listener, err := net.ListenTCP("", addr)
+	listener, err := net.ListenTCP(bs.IPVersion, addr)
 	if err != nil {
 		bs.logging.Error("listen %s error: %v", bs.Port, err)
 		return

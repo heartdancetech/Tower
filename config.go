@@ -1,9 +1,10 @@
 package tower
 
 type Config struct {
-	Name string
-	IP   string
-	Port int
+	Name      string
+	IP        string
+	IPVersion string
+	Port      int
 
 	MaxPacketSize    uint32 //都需数据包的最大值
 	MaxConn          int    //当前服务器主机允许的最大链接个数
@@ -15,6 +16,9 @@ type Config struct {
 func (c *Config) setDefault() {
 	if c.IP == "" {
 		c.IP = "0.0.0.0"
+	}
+	if c.IPVersion == "" {
+		c.IPVersion = "tcp4"
 	}
 
 	if c.Port == 0 {
