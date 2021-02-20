@@ -1,4 +1,4 @@
-package logger
+package tower
 
 import (
 	"log"
@@ -19,15 +19,15 @@ type LogWrite interface {
 	Printf(string, ...interface{})
 }
 
-type Logger interface {
-	LogMode(lvl LogLevel) Logger
+type logger interface {
+	LogMode(lvl LogLevel) logger
 	Debug(string, ...interface{})
 	Info(string, ...interface{})
 	Warn(string, ...interface{})
 	Error(string, ...interface{})
 }
 
-func NewLogger(w LogWrite, lvl LogLevel) Logger {
+func NewLogger(w LogWrite, lvl LogLevel) logger {
 	return &logging{
 		LogWrite: w,
 		LogLevel: lvl,
@@ -35,7 +35,7 @@ func NewLogger(w LogWrite, lvl LogLevel) Logger {
 }
 
 var (
-	DefaultLogging = NewLogger(log.New(os.Stdout, "[Tower] ", log.Ldate|log.Ltime|log.LUTC), Debug)
+	defaultLogging = NewLogger(log.New(os.Stdout, "[Tower] ", log.Ldate|log.Ltime|log.LUTC), Debug)
 )
 
 type logging struct {
@@ -43,7 +43,7 @@ type logging struct {
 	LogLevel LogLevel
 }
 
-func (l *logging) LogMode(lvl LogLevel) Logger {
+func (l *logging) LogMode(lvl LogLevel) logger {
 	l.LogLevel = lvl
 	return l
 }

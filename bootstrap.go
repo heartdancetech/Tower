@@ -2,7 +2,6 @@ package tower
 
 import (
 	"fmt"
-	"github.com/go-tower/tower/logger"
 	"net"
 )
 
@@ -14,14 +13,15 @@ type BootStraper interface {
 	SetOnConnClose(func(conn Connectioner))               // set hook func when client disconnect server
 	CallOnConnStart(conn Connectioner)                    // call OnConnStart hook func
 	CallOnConnClose(conn Connectioner)                    // call OnConnStop hook func
-	getConfig() *Config                                   // get server global config
-	Logging() logger.Logger                               // get logging
+	SetLogging(logger)                                    // set logging
 	AddRoute(msgId uint32, handleFunc func(ctx *Context)) // add route
+	Logging() logger                                      // get logging
+	getConfig() *Config                                   // get server global config
 }
 
 type bootStrap struct {
 	*Config
-	logging     logger.Logger
+	logging     logger
 	ConnMgr     ConnManager
 	Router      Router
 	OnConnStart func(conn Connectioner)
@@ -37,7 +37,7 @@ func NewBootStrap(config *Config) BootStraper {
 	return &bootStrap{
 		Config:      config,
 		ConnMgr:     NewConnManage(),
-		logging:     logger.DefaultLogging,
+		logging:     defaultLogging,
 		Router:      newRoute(),
 		OnConnStart: nil,
 		OnConnClose: nil,
@@ -111,7 +111,11 @@ func (bs *bootStrap) CallOnConnClose(conn Connectioner) {
 	}
 }
 
-func (bs *bootStrap) Logging() logger.Logger {
+func (bs *bootStrap) SetLogging(logging logger) {
+	bs.logging = logging
+}
+
+func (bs *bootStrap) Logging() logger {
 	return bs.logging
 }
 

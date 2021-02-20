@@ -1,4 +1,4 @@
-package logger
+package tower
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -19,7 +19,7 @@ func TestNewLogger(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var _ Logger = new(logging)
+			var _ logger = new(logging)
 		})
 	}
 }
