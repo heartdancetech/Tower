@@ -1,13 +1,13 @@
 package tower
 
 import (
-	"fmt"
 	"strconv"
 	"sync"
 )
 
 type Router interface {
 	AddRoute(msgId uint, handleFunc func(ctx *Context))
+	doHandler(ctx *Context)
 }
 
 type route struct {
@@ -31,7 +31,6 @@ func (r *route) AddRoute(msgId uint, handleFunc func(ctx *Context)) {
 func (r *route) doHandler(ctx *Context) {
 	handler, ok := r.routes[ctx.GetMsgId()]
 	if !ok {
-		fmt.Println("api msgId = ", ctx.GetMsgId(), " is not FOUND!")
 		return
 	}
 	handler(ctx)

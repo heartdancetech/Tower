@@ -117,6 +117,12 @@ func (c *Connection) startRead() {
 				}
 			}
 			msg.SetData(data)
+			ctx := &Context{
+				conn:    c,
+				msgId:   msg.GetMsgId(),
+				message: data,
+			}
+			go c.route.doHandler(ctx)
 		}
 	}
 }
@@ -178,8 +184,7 @@ func (c *Connection) SendMsg(msgId uint, data []byte) error {
 	dp := NewDataPack()
 	msg, err := dp.Pack(NewMsgPackage(msgId, data))
 	if err != nil {
-		c.Server.Logging().Error("Pack error msg id = ", msgId)
-		return errors.New("Pack error msg ")
+		return errors.New("pack error msg")
 	}
 
 	//写回客户端
