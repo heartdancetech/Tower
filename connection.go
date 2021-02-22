@@ -25,7 +25,7 @@ type Connection struct {
 	Server    BootStraper
 	Conn      *net.TCPConn
 	ConnID    uint32
-	route     Router
+	route     router
 	ctx       context.Context
 	ctxCancel context.CancelFunc
 	//无缓冲管道，用于读、写两个goroutine之间的消息通信
@@ -39,7 +39,7 @@ type Connection struct {
 	isClosed     bool                   ///当前连接的关闭状态
 }
 
-func NewConnection(server BootStraper, conn *net.TCPConn, connID uint32, route Router) *Connection {
+func NewConnection(server BootStraper, conn *net.TCPConn, connID uint32, route router) *Connection {
 	c := &Connection{
 		Server:      server,
 		Conn:        conn,

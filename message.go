@@ -6,7 +6,7 @@ type Message struct {
 	Data    []byte //消息的内容
 }
 
-//创建一个Message消息包
+//NewMsgPackage create a message package instance
 func NewMsgPackage(id uint32, data []byte) *Message {
 	return &Message{
 		DataLen: uint32(len(data)),
@@ -15,32 +15,32 @@ func NewMsgPackage(id uint32, data []byte) *Message {
 	}
 }
 
-//获取消息数据段长度
+// GetDataLen get message data's length
 func (msg *Message) GetDataLen() uint32 {
 	return msg.DataLen
 }
 
-//获取消息ID
+// GetMsgId
 func (msg *Message) GetMsgId() uint32 {
 	return msg.Id
 }
 
-//获取消息内容
+// GetData get message content
 func (msg *Message) GetData() []byte {
 	return msg.Data
 }
 
-//设置消息数据段长度
+// SetDataLen
 func (msg *Message) SetDataLen(len uint32) {
 	msg.DataLen = len
 }
 
-//设计消息ID
+// SetMsgId
 func (msg *Message) SetMsgId(msgId uint32) {
 	msg.Id = msgId
 }
 
-//设计消息内容
+// SetData set message's data content
 func (msg *Message) SetData(data []byte) {
 	msg.Data = data
 }

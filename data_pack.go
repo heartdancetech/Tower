@@ -5,21 +5,20 @@ import (
 	"encoding/binary"
 )
 
-//封包拆包类实例，暂时不需要成员
 type DataPack struct{}
 
-//封包拆包实例初始化方法
+// NewDataPack data pack instance initialization
 func NewDataPack() *DataPack {
 	return &DataPack{}
 }
 
-//获取包头长度方法
+// GetHeadLen get pack head's length
 func (dp *DataPack) GetHeadLen() uint32 {
 	//Id uint32(4字节) +  DataLen uint32(4字节)
 	return 8
 }
 
-//封包方法(压缩数据)
+// Pack pack data, compress data
 func (dp *DataPack) Pack(msg *Message) ([]byte, error) {
 	//创建一个存放bytes字节的缓冲
 	dataBuff := bytes.NewBuffer([]byte{})
@@ -42,7 +41,7 @@ func (dp *DataPack) Pack(msg *Message) ([]byte, error) {
 	return dataBuff.Bytes(), nil
 }
 
-//拆包方法(解压数据)
+// Unpack unpack data, uncompress data
 func (dp *DataPack) Unpack(binaryData []byte) (*Message, error) {
 	//创建一个从输入二进制数据的ioReader
 	dataBuff := bytes.NewReader(binaryData)

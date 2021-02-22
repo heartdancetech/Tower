@@ -6,11 +6,11 @@ import (
 )
 
 type ConnManager interface {
-	Add(conn Connectioner)                   //添加链接
-	Remove(conn Connectioner)                //删除连接
-	Get(connID uint32) (Connectioner, error) //利用ConnID获取链接
-	Len() int                                //获取当前连接
-	ClearConn()                              //删除并停止所有链接
+	Add(conn Connectioner)                   // add connection
+	Remove(conn Connectioner)                // delete connection
+	Get(connID uint32) (Connectioner, error) // get connection by connection id
+	Len() int                                // get connections's count
+	ClearConn()                              // stop all connections, then delete them
 }
 
 type ConnManage struct {
@@ -24,12 +24,14 @@ func NewConnManage() *ConnManage {
 	}
 }
 
+// Add add connection
 func (c *ConnManage) Add(conn Connectioner) {
 	c.connLock.Lock()
 	defer c.connLock.Unlock()
 	c.connections[conn.GetConnID()] = conn
 }
 
+// Remove delete connection
 func (c *ConnManage) Remove(conn Connectioner) {
 	c.connLock.Lock()
 	defer c.connLock.Unlock()
@@ -37,6 +39,7 @@ func (c *ConnManage) Remove(conn Connectioner) {
 	delete(c.connections, conn.GetConnID())
 }
 
+// Get get connection by connection id
 func (c *ConnManage) Get(connID uint32) (Connectioner, error) {
 	c.connLock.RLock()
 	defer c.connLock.RUnlock()
@@ -48,10 +51,12 @@ func (c *ConnManage) Get(connID uint32) (Connectioner, error) {
 	}
 }
 
+// Len get connections's count
 func (c *ConnManage) Len() int {
 	return len(c.connections)
 }
 
+// ClearConn stop all connections, then delete them
 func (c *ConnManage) ClearConn() {
 	c.connLock.Lock()
 	defer c.connLock.Unlock()

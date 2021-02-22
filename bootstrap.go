@@ -23,7 +23,7 @@ type bootStrap struct {
 	*Config
 	logging     logger
 	ConnMgr     ConnManager
-	Router      Router
+	router      router
 	OnConnStart func(conn Connectioner)
 	OnConnClose func(conn Connectioner)
 }
@@ -38,7 +38,7 @@ func NewBootStrap(config *Config) BootStraper {
 		Config:      config,
 		ConnMgr:     NewConnManage(),
 		logging:     defaultLogging,
-		Router:      newRoute(),
+		router:      newRoute(),
 		OnConnStart: nil,
 		OnConnClose: nil,
 	}
@@ -76,7 +76,7 @@ func (bs *bootStrap) Listen() {
 		}
 
 		//3.3 处理该新连接请求的 业务 方法， 此时应该有 handler 和 conn是绑定的
-		dealConn := NewConnection(bs, conn, cid, bs.Router)
+		dealConn := NewConnection(bs, conn, cid, bs.router)
 
 		//3.4 启动当前链接的处理业务
 		go dealConn.Start()
@@ -94,12 +94,12 @@ func (bs *bootStrap) GetConnMgr() ConnManager {
 	return bs.ConnMgr
 }
 
-// SetOnConnStart set func on client start connect
+// SetOnConnStart set hook func when client connect server
 func (bs *bootStrap) SetOnConnStart(hookFunc func(conn Connectioner)) {
 	bs.OnConnStart = hookFunc
 }
 
-// SetOnConnStart set func on client close connect
+// SetOnConnClose set hook func when client disconnect server
 func (bs *bootStrap) SetOnConnClose(hookFunc func(conn Connectioner)) {
 	bs.OnConnClose = hookFunc
 }
@@ -131,5 +131,5 @@ func (bs *bootStrap) getConfig() *Config {
 
 // AddRoute add route
 func (bs *bootStrap) AddRoute(msgId uint32, handleFunc func(ctx *Context)) {
-	bs.Router.AddRoute(msgId, handleFunc)
+	bs.router.addRoute(msgId, handleFunc)
 }

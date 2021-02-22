@@ -5,8 +5,8 @@ import (
 	"sync"
 )
 
-type Router interface {
-	AddRoute(msgId uint32, handleFunc func(ctx *Context))
+type router interface {
+	addRoute(msgId uint32, handleFunc func(ctx *Context))
 	doHandler(ctx *Context)
 }
 
@@ -15,11 +15,11 @@ type route struct {
 	sync.Mutex
 }
 
-func newRoute() *route {
+func newRoute() router {
 	return &route{routes: make(map[uint32]func(ctx *Context))}
 }
 
-func (r *route) AddRoute(msgId uint32, handleFunc func(ctx *Context)) {
+func (r *route) addRoute(msgId uint32, handleFunc func(ctx *Context)) {
 	r.Lock()
 	defer r.Unlock()
 	if _, ok := r.routes[msgId]; ok {
