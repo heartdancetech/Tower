@@ -44,6 +44,7 @@ func NewBootStrap(config *Config) BootStraper {
 	}
 }
 
+// Listen start server,listen port
 func (bs *bootStrap) Listen() {
 	bs.logging.Debug("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
 	addr, err := net.ResolveTCPAddr(bs.IPVersion, fmt.Sprintf("%s:%d", bs.IP, bs.Port))
@@ -82,19 +83,23 @@ func (bs *bootStrap) Listen() {
 	}
 }
 
+// Stop stop server
 func (bs *bootStrap) Stop() {
 	bs.ConnMgr.ClearConn()
 	bs.logging.Info("server stop")
 }
 
+// GetConnMgr get connection manager
 func (bs *bootStrap) GetConnMgr() ConnManager {
 	return bs.ConnMgr
 }
 
+// SetOnConnStart set func on client start connect
 func (bs *bootStrap) SetOnConnStart(hookFunc func(conn Connectioner)) {
 	bs.OnConnStart = hookFunc
 }
 
+// SetOnConnStart set func on client close connect
 func (bs *bootStrap) SetOnConnClose(hookFunc func(conn Connectioner)) {
 	bs.OnConnClose = hookFunc
 }
@@ -111,6 +116,7 @@ func (bs *bootStrap) CallOnConnClose(conn Connectioner) {
 	}
 }
 
+// SetLogging set custmer logging
 func (bs *bootStrap) SetLogging(logging logger) {
 	bs.logging = logging
 }
@@ -123,6 +129,7 @@ func (bs *bootStrap) getConfig() *Config {
 	return bs.Config
 }
 
+// AddRoute add route
 func (bs *bootStrap) AddRoute(msgId uint32, handleFunc func(ctx *Context)) {
 	bs.Router.AddRoute(msgId, handleFunc)
 }
