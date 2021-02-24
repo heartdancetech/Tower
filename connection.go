@@ -36,7 +36,8 @@ type Connection struct {
 	isClosed     bool                   // 当前连接的关闭状态
 }
 
-func NewConnection(server BootStraper, conn *net.TCPConn, connID uint32, route router) *Connection {
+// NewConnection get new connection instance
+func NewConnection(server BootStraper, conn *net.TCPConn, connID uint32, route router) Connectioner {
 	c := &Connection{
 		Server:      server,
 		Conn:        conn,
