@@ -19,15 +19,15 @@ type LogWrite interface {
 	Printf(string, ...interface{})
 }
 
-type logger interface {
-	LogMode(lvl LogLevel) logger
+type Logger interface {
+	LogMode(lvl LogLevel) Logger
 	Debug(string, ...interface{})
 	Info(string, ...interface{})
 	Warn(string, ...interface{})
 	Error(string, ...interface{})
 }
 
-func NewLogger(w LogWrite, lvl LogLevel) logger {
+func NewLogger(w LogWrite, lvl LogLevel) Logger {
 	return &logging{
 		LogWrite: w,
 		LogLevel: lvl,
@@ -43,7 +43,7 @@ type logging struct {
 	LogLevel LogLevel
 }
 
-func (l *logging) LogMode(lvl LogLevel) logger {
+func (l *logging) LogMode(lvl LogLevel) Logger {
 	l.LogLevel = lvl
 	return l
 }

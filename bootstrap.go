@@ -13,15 +13,15 @@ type BootStraper interface {
 	SetOnConnClose(func(conn Connectioner))               // set hook func when client disconnect server
 	CallOnConnStart(conn Connectioner)                    // call OnConnStart hook func
 	CallOnConnClose(conn Connectioner)                    // call OnConnStop hook func
-	SetLogging(logger)                                    // set logging
+	SetLogging(Logger)                                    // set logging
 	AddRoute(msgId uint32, handleFunc func(ctx *Context)) // add route
-	Logging() logger                                      // get logging
+	Logging() Logger                                      // get logging
 	getConfig() *Config                                   // get server global config
 }
 
 type bootStrap struct {
 	*Config
-	logging     logger
+	logging     Logger
 	ConnMgr     ConnManager
 	router      router
 	OnConnStart func(conn Connectioner)
@@ -117,11 +117,11 @@ func (bs *bootStrap) CallOnConnClose(conn Connectioner) {
 }
 
 // SetLogging set custmer logging
-func (bs *bootStrap) SetLogging(logging logger) {
+func (bs *bootStrap) SetLogging(logging Logger) {
 	bs.logging = logging
 }
 
-func (bs *bootStrap) Logging() logger {
+func (bs *bootStrap) Logging() Logger {
 	return bs.logging
 }
 
