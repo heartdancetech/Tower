@@ -9,7 +9,7 @@ type ConnManager interface {
 	Add(conn Connectioner)                   // add connection
 	Remove(conn Connectioner)                // delete connection
 	Get(connID uint32) (Connectioner, error) // get connection by connection id
-	Len() int                                // get connections's count
+	Len() int                                // get connections' count
 	ClearConn()                              // stop all connections, then delete them
 }
 
@@ -51,7 +51,7 @@ func (c *ConnManage) Get(connID uint32) (Connectioner, error) {
 	}
 }
 
-// Len get connections's count
+// Len get connections' count
 func (c *ConnManage) Len() int {
 	return len(c.connections)
 }

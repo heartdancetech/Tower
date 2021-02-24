@@ -5,13 +5,15 @@ type Config struct {
 	IP               string // server listen ip
 	IPVersion        string // ip version
 	Port             int    // server listen port
-	MaxPacketSize    uint32 // server accpect max packet size
-	MaxConn          int    // server accpect max connection count
+	MaxPacketSize    uint32 // server accept max packet size
+	MaxConn          int    // server accept max connection count
 	WorkerPoolSize   uint32 // work pool
 	MaxWorkerTaskLen uint32 // 业务工作Worker对应负责的任务队列最大任务存储数量
 	MaxMsgChanLen    uint32 // SendBuffMsg发送消息的缓冲最大长度
 }
 
+// setDefault if bootstrap init with nil config
+// set default config
 func (c *Config) setDefault() {
 	if c.IP == "" {
 		c.IP = "0.0.0.0"

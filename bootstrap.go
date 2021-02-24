@@ -116,7 +116,7 @@ func (bs *bootStrap) CallOnConnClose(conn Connectioner) {
 	}
 }
 
-// SetLogging set custmer logging
+// SetLogging set customer logging
 func (bs *bootStrap) SetLogging(logging Logger) {
 	bs.logging = logging
 }
