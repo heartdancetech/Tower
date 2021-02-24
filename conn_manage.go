@@ -14,8 +14,8 @@ type ConnManager interface {
 }
 
 type ConnManage struct {
-	connections map[uint32]Connectioner // 连接管理
-	connLock    sync.RWMutex            //读写连接的读写锁
+	connections map[uint32]Connectioner // connection map
+	connLock    sync.RWMutex            // connection map RWLock
 }
 
 func NewConnManage() *ConnManage {

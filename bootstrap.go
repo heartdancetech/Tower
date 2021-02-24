@@ -121,10 +121,12 @@ func (bs *bootStrap) SetLogging(logging Logger) {
 	bs.logging = logging
 }
 
+// Logging get bootstrap's logging
 func (bs *bootStrap) Logging() Logger {
 	return bs.logging
 }
 
+// getConfig get config pointer
 func (bs *bootStrap) getConfig() *Config {
 	return bs.Config
 }

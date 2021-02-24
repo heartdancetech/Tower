@@ -1,9 +1,9 @@
 package tower
 
 type Message struct {
-	DataLen uint32 //消息的长度
-	Id      uint32 //消息的ID
-	Data    []byte //消息的内容
+	DataLen uint32 // message's length
+	Id      uint32 // message's id
+	Data    []byte // message's content
 }
 
 //NewMsgPackage create a message package instance
