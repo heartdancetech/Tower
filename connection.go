@@ -219,7 +219,7 @@ func (c *Connection) SendBuffMsg(msgId uint32, data []byte) error {
 }
 
 func (c *Connection) SetProperty(key string, value interface{}) {
-	c.propertyLock.Unlock()
+	c.propertyLock.Lock()
 	defer c.propertyLock.Unlock()
 	c.property[key] = value
 }
