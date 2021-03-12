@@ -172,7 +172,7 @@ func (c *Connection) GetConnID() uint32 {
 }
 
 func (c *Connection) RemoteAddr() net.Addr {
-	return c.RemoteAddr()
+	return c.Conn.RemoteAddr()
 }
 
 func (c *Connection) SendMsg(msgId uint32, data []byte) error {
