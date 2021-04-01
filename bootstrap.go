@@ -77,6 +77,7 @@ func (bs *bootStrap) Listen() {
 
 		//3.3 处理该新连接请求的 业务 方法， 此时应该有 handler 和 conn是绑定的
 		dealConn := NewConnection(bs, conn, cid, bs.router)
+		cid++
 
 		//3.4 启动当前链接的处理业务
 		go dealConn.Start()
