@@ -105,7 +105,7 @@ func (c *Connection) startRead() {
 				return
 			}
 
-			if msg.DataLen > c.Server.getConfig().MaxPacketSize {
+			if c.Server.getConfig().MaxPacketSize != 0 && msg.DataLen > c.Server.getConfig().MaxPacketSize {
 				c.Server.Logging().Error("too large msg data received")
 				return
 			}

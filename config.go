@@ -26,10 +26,6 @@ func (c *Config) setDefault() {
 		c.Port = 8999
 	}
 
-	if c.MaxPacketSize == 0 {
-		c.MaxPacketSize = 4096
-	}
-
 	if c.MaxConn == 0 {
 		c.MaxConn = 1024
 	}
