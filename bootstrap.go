@@ -16,7 +16,7 @@ type BootStraper interface {
 	SetLogging(Logger)                                    // set logging
 	AddRoute(msgId uint32, handleFunc func(ctx *Context)) // add route
 	Logging() Logger                                      // get logging
-	getConfig() *Config                                   // get server global config
+	GetConfig() *Config                                   // get server global config
 }
 
 type bootStrap struct {
@@ -30,9 +30,9 @@ type bootStrap struct {
 
 func NewBootStrap(config *Config) BootStraper {
 	if config == nil {
-		config = &Config{}
+		config = NewConfig()
 	}
-	config.setDefault()
+	config.check()
 
 	return &bootStrap{
 		Config:      config,
@@ -127,8 +127,8 @@ func (bs *bootStrap) Logging() Logger {
 	return bs.logging
 }
 
-// getConfig get config pointer
-func (bs *bootStrap) getConfig() *Config {
+// GetConfig get config pointer
+func (bs *bootStrap) GetConfig() *Config {
 	return bs.Config
 }
 

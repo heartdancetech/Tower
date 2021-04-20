@@ -44,7 +44,7 @@ func NewConnection(server BootStraper, conn *net.TCPConn, connID uint32, route r
 		ConnID:      connID,
 		route:       route,
 		msgChan:     make(chan []byte),
-		msgBuffChan: make(chan []byte, server.getConfig().MaxMsgChanLen),
+		msgBuffChan: make(chan []byte, server.GetConfig().MaxMsgChanLen),
 		property:    make(map[string]interface{}),
 		isClosed:    false,
 	}
@@ -105,7 +105,7 @@ func (c *Connection) startRead() {
 				return
 			}
 
-			if c.Server.getConfig().MaxPacketSize != 0 && msg.DataLen > c.Server.getConfig().MaxPacketSize {
+			if c.Server.GetConfig().MaxPacketSize != 0 && msg.DataLen > c.Server.GetConfig().MaxPacketSize {
 				c.Server.Logging().Error("too large msg data received")
 				return
 			}
