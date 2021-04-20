@@ -21,6 +21,7 @@ type BootStraper interface {
 
 type bootStrap struct {
 	*Config
+	down        chan bool
 	logging     Logger
 	ConnMgr     ConnManager
 	router      router
@@ -46,7 +47,7 @@ func NewBootStrap(config *Config) BootStraper {
 
 // Listen start server,listen port
 func (bs *bootStrap) Listen() {
-	bs.logging.Debug("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
+	bs.logging.Info("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
 	addr, err := net.ResolveTCPAddr(bs.IPVersion, fmt.Sprintf("%s:%d", bs.IP, bs.Port))
 	if err != nil {
 		bs.logging.Error("resolve tcp addr err: %v", err)
@@ -59,7 +60,9 @@ func (bs *bootStrap) Listen() {
 		bs.logging.Error("listen %s error: %v", bs.Port, err)
 		return
 	}
-	bs.logging.Debug("start server %s success, now listening...", bs.Name)
+	bs.logging.Info("Start server %s success, now listening...", bs.Name)
+
+	// TODO conn id maybe can use other method
 	var cid uint32 = 0
 	for {
 		conn, err := listener.AcceptTCP()
@@ -87,7 +90,7 @@ func (bs *bootStrap) Listen() {
 // Stop stop server
 func (bs *bootStrap) Stop() {
 	bs.ConnMgr.ClearConn()
-	bs.logging.Info("server stop")
+	bs.logging.Info("Server stop")
 }
 
 // GetConnMgr get connection manager
