@@ -15,7 +15,7 @@ type BootStraper interface {
 	CallOnConnClose(conn Connectioner)                    // call OnConnStop hook func
 	SetLogging(Logger)                                    // set logging
 	AddRoute(msgId uint32, handleFunc func(ctx *Context)) // add route
-	Logging() Logger                                      // get logging
+	Logging() Logger                                      // logging
 	GetConfig() *Config                                   // get server global config
 }
 
@@ -53,7 +53,7 @@ func (bs *bootStrap) Listen() {
 		return
 	}
 
-	// 监听服务器地址
+	// listen server addr and port
 	listener, err := net.ListenTCP(bs.IPVersion, addr)
 	if err != nil {
 		bs.logging.Error("listen %s error: %v", bs.Port, err)
@@ -69,7 +69,7 @@ func (bs *bootStrap) Listen() {
 		}
 		bs.logging.Debug("Get conn remote addr = %v", conn.RemoteAddr().String())
 
-		//3.2 设置服务器最大连接控制,如果超过最大连接，那么则关闭此新的连接
+		// set server's max conn accept number, if greater than config's value then close this conn
 		if bs.ConnMgr.Len() >= bs.Config.MaxConn {
 			_ = conn.Close()
 			return

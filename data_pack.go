@@ -43,7 +43,7 @@ func (dp *DataPack) Pack(msg *Message) ([]byte, error) {
 
 // Unpack unpack data, uncompress data
 func (dp *DataPack) Unpack(binaryData []byte) (*Message, error) {
-	//创建一个从输入二进制数据的ioReader
+	// create ioReader from binary input
 	dataBuff := bytes.NewReader(binaryData)
 
 	// just uncompress head data,get data's length and id

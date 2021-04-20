@@ -13,7 +13,7 @@ type Connectioner interface {
 	Stop()                                       // stop and close connection
 	GetTCPConnection() *net.TCPConn              // 从当前连接获取原始的socket TCPConn
 	GetConnID() uint32                           // get connection's id
-	RemoteAddr() net.Addr                        // 获取远程客户端地址信息
+	RemoteAddr() net.Addr                        // get remote client addr info
 	SendMsg(msgId uint32, data []byte) error     // 直接将Message数据发送数据给远程的TCP客户端(无缓冲)
 	SendBuffMsg(msgId uint32, data []byte) error // 直接将Message数据发送给远程的TCP客户端(有缓冲)
 	SetProperty(key string, value interface{})   // set connection's property
@@ -57,12 +57,12 @@ func (c *Connection) startWrite() {
 	defer c.Server.Logging().Debug("%s [conn Writer exit!]", c.RemoteAddr().String())
 	for {
 		select {
-		case data := <-c.msgChan: //有数据要写给客户端
+		case data := <-c.msgChan:
 			if _, err := c.Conn.Write(data); err != nil {
 				c.Server.Logging().Error("Send Buff Data error:, %v Conn Writer exit", err)
 				return
 			}
-		case data, ok := <-c.msgBuffChan: //有数据要写给客户端
+		case data, ok := <-c.msgBuffChan:
 			if ok {
 				if _, err := c.Conn.Write(data); err != nil {
 					c.Server.Logging().Error("Send Buff Data error:, %v Conn Writer exit", err)
@@ -150,15 +150,14 @@ func (c *Connection) Stop() {
 	}
 	c.isClosed = true
 
-	// 关闭socket链接
+	// close socket conn
 	_ = c.Conn.Close()
-	//关闭Writer
 	c.ctxCancel()
 
-	//将链接从连接管理器中删除
+	// remoce conn from ConnMgr
 	c.Server.GetConnMgr().Remove(c)
 
-	//关闭该链接全部管道
+	// close all channel in this conn
 	close(c.msgBuffChan)
 	close(c.msgChan)
 }
@@ -183,14 +182,13 @@ func (c *Connection) SendMsg(msgId uint32, data []byte) error {
 	}
 	c.RUnlock()
 
-	//将data封包，并且发送
+	// pack data then send
 	dp := NewDataPack()
 	msg, err := dp.Pack(NewMsgPackage(msgId, data))
 	if err != nil {
 		return errors.New("pack error msg")
 	}
 
-	//写回客户端
 	c.msgChan <- msg
 
 	return nil
@@ -204,7 +202,7 @@ func (c *Connection) SendBuffMsg(msgId uint32, data []byte) error {
 	}
 	c.RUnlock()
 
-	//将data封包，并且发送
+	// pack data then send
 	dp := NewDataPack()
 	msg, err := dp.Pack(NewMsgPackage(msgId, data))
 	if err != nil {
@@ -212,7 +210,6 @@ func (c *Connection) SendBuffMsg(msgId uint32, data []byte) error {
 		return errors.New("Pack error msg ")
 	}
 
-	//写回客户端
 	c.msgBuffChan <- msg
 
 	return nil
