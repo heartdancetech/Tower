@@ -62,14 +62,12 @@ func (bs *bootStrap) Listen() {
 	}
 	bs.logging.Info("Start server %s success, now listening...", bs.Name)
 
-	// TODO conn id maybe can use other method
 	var cid uint32 = 0
 	for {
 		select {
 		case <-bs.down:
 			break
 		default:
-			// TODO error will crash listen and lost client conn
 			conn, err := listener.AcceptTCP()
 			if err != nil {
 				bs.logging.Error("Accept err: %v", err)
