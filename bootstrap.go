@@ -21,8 +21,8 @@ type BootStraper interface {
 
 type bootStrap struct {
 	*Config
-	down        chan bool
 	logging     Logger
+	listener    *net.TCPListener
 	ConnMgr     ConnManager
 	router      router
 	OnConnStart func(conn Connectioner)
@@ -60,41 +60,36 @@ func (bs *bootStrap) Listen() {
 		bs.logging.Error("listen %s error: %v", bs.Port, err)
 		return
 	}
+	bs.listener = listener
 	bs.logging.Info("Start server %s success, now listening...", bs.Name)
-
 	var cid uint32 = 0
 	for {
-		select {
-		case <-bs.down:
-			break
-		default:
-			conn, err := listener.AcceptTCP()
-			if err != nil {
-				bs.logging.Error("Accept err: %v", err)
-				return
-			}
-			bs.logging.Debug("Get conn remote addr = %v", conn.RemoteAddr().String())
-
-			// set server's max conn accept number, if greater than config's value then close this conn
-			if bs.ConnMgr.Len() >= bs.Config.MaxConn {
-				_ = conn.Close()
-				return
-			}
-
-			//3.3 处理该新连接请求的 业务 方法， 此时应该有 handler 和 conn是绑定的
-			dealConn := NewConnection(bs, conn, cid, bs.router)
-			cid++
-
-			//3.4 启动当前链接的处理业务
-			go dealConn.Start()
+		conn, err := listener.AcceptTCP()
+		if err != nil {
+			bs.logging.Error("Accept err: %v", err)
+			return
 		}
+		bs.logging.Debug("Get conn remote addr = %v", conn.RemoteAddr().String())
+
+		// set server's max conn accept number, if greater than config's value then close this conn
+		if bs.ConnMgr.Len() >= bs.Config.MaxConn {
+			_ = conn.Close()
+			return
+		}
+
+		//3.3 处理该新连接请求的 业务 方法， 此时应该有 handler 和 conn是绑定的
+		dealConn := NewConnection(bs, conn, cid, bs.router)
+		cid++
+
+		//3.4 启动当前链接的处理业务
+		go dealConn.Start()
 	}
 }
 
 // Stop stop server
 func (bs *bootStrap) Stop() {
 	bs.ConnMgr.ClearConn()
-	bs.down <- true
+	_ = bs.listener.Close()
 	bs.logging.Info("Server stop")
 }
 
