@@ -15,13 +15,14 @@ type BootStraper interface {
 	CallOnConnClose(conn Connectioner)                    // call OnConnStop hook func
 	SetLogging(Logger)                                    // set logging
 	AddRoute(msgId uint32, handleFunc func(ctx *Context)) // add route
-	Logging() Logger                                      // get logging
-	getConfig() *Config                                   // get server global config
+	Logging() Logger                                      // logging
+	GetConfig() *Config                                   // get server global config
 }
 
 type bootStrap struct {
 	*Config
 	logging     Logger
+	listener    *net.TCPListener
 	ConnMgr     ConnManager
 	router      router
 	OnConnStart func(conn Connectioner)
@@ -30,9 +31,9 @@ type bootStrap struct {
 
 func NewBootStrap(config *Config) BootStraper {
 	if config == nil {
-		config = &Config{}
+		config = NewConfig()
 	}
-	config.setDefault()
+	config.check()
 
 	return &bootStrap{
 		Config:      config,
@@ -46,20 +47,21 @@ func NewBootStrap(config *Config) BootStraper {
 
 // Listen start server,listen port
 func (bs *bootStrap) Listen() {
-	bs.logging.Debug("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
+	bs.logging.Info("Server listener at IP: %v, Port %v, is starting\n", bs.IP, bs.Port)
 	addr, err := net.ResolveTCPAddr(bs.IPVersion, fmt.Sprintf("%s:%d", bs.IP, bs.Port))
 	if err != nil {
 		bs.logging.Error("resolve tcp addr err: %v", err)
 		return
 	}
 
-	// 监听服务器地址
+	// listen server addr and port
 	listener, err := net.ListenTCP(bs.IPVersion, addr)
 	if err != nil {
 		bs.logging.Error("listen %s error: %v", bs.Port, err)
 		return
 	}
-	bs.logging.Debug("start server %s success, now listening...", bs.Name)
+	bs.listener = listener
+	bs.logging.Info("Start server %s success, now listening...", bs.Name)
 	var cid uint32 = 0
 	for {
 		conn, err := listener.AcceptTCP()
@@ -69,7 +71,7 @@ func (bs *bootStrap) Listen() {
 		}
 		bs.logging.Debug("Get conn remote addr = %v", conn.RemoteAddr().String())
 
-		//3.2 设置服务器最大连接控制,如果超过最大连接，那么则关闭此新的连接
+		// set server's max conn accept number, if greater than config's value then close this conn
 		if bs.ConnMgr.Len() >= bs.Config.MaxConn {
 			_ = conn.Close()
 			return
@@ -87,7 +89,8 @@ func (bs *bootStrap) Listen() {
 // Stop stop server
 func (bs *bootStrap) Stop() {
 	bs.ConnMgr.ClearConn()
-	bs.logging.Info("server stop")
+	_ = bs.listener.Close()
+	bs.logging.Info("Server stop")
 }
 
 // GetConnMgr get connection manager
@@ -127,8 +130,8 @@ func (bs *bootStrap) Logging() Logger {
 	return bs.logging
 }
 
-// getConfig get config pointer
-func (bs *bootStrap) getConfig() *Config {
+// GetConfig get config pointer
+func (bs *bootStrap) GetConfig() *Config {
 	return bs.Config
 }
 

@@ -61,7 +61,7 @@ func (c *ConnManage) ClearConn() {
 	c.connLock.Lock()
 	defer c.connLock.Unlock()
 
-	//停止并删除全部的连接信息
+	// stop and clear all conn
 	for connID, conn := range c.connections {
 		conn.Stop()
 		delete(c.connections, connID)

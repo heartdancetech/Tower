@@ -12,9 +12,24 @@ type Config struct {
 	MaxMsgChanLen    uint32 // SendBuffMsg发送消息的缓冲最大长度
 }
 
-// setDefault if bootstrap init with nil config
-// set default config
-func (c *Config) setDefault() {
+// NewConfig new config instance use default config option
+func NewConfig() *Config {
+	return &Config{
+		Name:             "Tower",
+		IP:               "0.0.0.0",
+		IPVersion:        "tcp4",
+		Port:             8999,
+		MaxPacketSize:    0,
+		MaxConn:          1024,
+		WorkerPoolSize:   0,
+		MaxWorkerTaskLen: 0,
+		MaxMsgChanLen:    1024,
+	}
+}
+
+// check if bootstrap init with custom config
+// set default config option
+func (c *Config) check() {
 	if c.IP == "" {
 		c.IP = "0.0.0.0"
 	}

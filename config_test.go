@@ -15,7 +15,7 @@ func TestConfig_check(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := Config{}
-			c.setDefault()
+			c.check()
 			assert.NotEqual(t, "", c.IP)
 			assert.Equal(t, "0.0.0.0", c.IP)
 			assert.NotEqual(t, 0, c.Port)
