@@ -27,7 +27,7 @@ func NewConfig() *Config {
 	}
 }
 
-// check if bootstrap init with custom config
+// check if bootstrap init without custom config
 // set default config option
 func (c *Config) check() {
 	if c.IP == "" {

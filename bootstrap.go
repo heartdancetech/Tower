@@ -86,7 +86,7 @@ func (bs *bootStrap) Listen() {
 	}
 }
 
-// Stop stop server
+// Stop server
 func (bs *bootStrap) Stop() {
 	bs.ConnMgr.ClearConn()
 	_ = bs.listener.Close()

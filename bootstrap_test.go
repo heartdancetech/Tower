@@ -31,7 +31,7 @@ func Test_bootStrap_SetOnConnSatrt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := Config{}
-			c.setDefault()
+			c.check()
 			b := &bootStrap{
 				Config:      &c,
 				ConnMgr:     nil,
@@ -53,7 +53,7 @@ func Test_bootStrap_SetOnConnClose(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := Config{}
-			c.setDefault()
+			c.check()
 			b := &bootStrap{
 				Config:      &c,
 				ConnMgr:     nil,
