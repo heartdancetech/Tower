@@ -42,7 +42,7 @@ func TestConfig_check(t *testing.T) {
 			assert.Equal(t, "0.0.0.0", c.IP)
 			assert.Equal(t, 8999, c.Port)
 			assert.Equal(t, 1024, c.MaxConn)
-			assert.Equal(t, 0, c.MaxPacketSize)
+			assert.Equal(t, uint32(0), c.MaxPacketSize)
 			assert.Equal(t, uint32(1024), c.MaxMsgChanLen)
 		})
 	}
