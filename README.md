@@ -17,7 +17,8 @@
 `Tower` is a tcp connection manager server.
 
 ## Document
-[Doc](https://github.com/go-tower/doc)
+[[文档]](https://tower.heartdance.xyz/)
+[[Doc]](https://tower.heartdance.xyz/v/latest_en/)
 
 ## JetBrains OS licenses
 
