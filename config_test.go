@@ -5,8 +5,31 @@ import (
 	"testing"
 )
 
-func TestConfig_check(t *testing.T) {
+func TestNewConfig(t *testing.T) {
+	tests := []struct {
+		name string
+		want *Config
+	}{
+		{"test", &Config{
+			Name:             "Tower",
+			IP:               "0.0.0.0",
+			IPVersion:        "tcp4",
+			Port:             8999,
+			MaxPacketSize:    0,
+			MaxConn:          1024,
+			WorkerPoolSize:   0,
+			MaxWorkerTaskLen: 0,
+			MaxMsgChanLen:    1024,
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, NewConfig())
+		})
+	}
+}
 
+func TestConfig_check(t *testing.T) {
 	tests := []struct {
 		name string
 	}{
