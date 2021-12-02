@@ -1,14 +1,11 @@
 package tower
 
 import (
-	"github.com/stretchr/testify/assert"
 	"log"
 	"os"
 	"testing"
-)
 
-var (
-	testLogger = NewLogger(log.New(os.Stdout, "[Tower] ", log.Ldate|log.Ltime|log.LUTC), Debug)
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewLogger(t *testing.T) {
