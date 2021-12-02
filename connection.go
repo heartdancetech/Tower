@@ -145,7 +145,7 @@ func (c *Connection) Stop() {
 	c.Server.CallOnConnClose(c)
 
 	//如果当前链接已经关闭
-	if c.isClosed == true {
+	if c.isClosed {
 		return
 	}
 	c.isClosed = true
@@ -176,7 +176,7 @@ func (c *Connection) RemoteAddr() net.Addr {
 
 func (c *Connection) SendMsg(msgId uint32, data []byte) error {
 	c.RLock()
-	if c.isClosed == true {
+	if c.isClosed {
 		c.RUnlock()
 		return errors.New("connection closed when send msg")
 	}
@@ -196,7 +196,7 @@ func (c *Connection) SendMsg(msgId uint32, data []byte) error {
 
 func (c *Connection) SendBuffMsg(msgId uint32, data []byte) error {
 	c.RLock()
-	if c.isClosed == true {
+	if c.isClosed {
 		c.RUnlock()
 		return errors.New("connection closed when send buff msg")
 	}
