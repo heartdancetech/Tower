@@ -1,4 +1,4 @@
-module github.com/heart-dance-x/tower
+module github.com/heart-dance/tower
 
 go 1.15
 

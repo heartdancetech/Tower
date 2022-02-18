@@ -70,7 +70,7 @@ func (c *Connection) startWrite() {
 				}
 			} else {
 				c.Server.Logging().Debug("msgBuffChan is Closed")
-				break
+				return
 			}
 		case <-c.ctx.Done():
 			return
